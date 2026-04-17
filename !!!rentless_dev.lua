@@ -17,7 +17,7 @@ if not LPH_OBFUSCATED then
 end
 
 local relentless_data = {} do
-    relentless_data.name = _USER_NAME or "admin"
+    relentless_data.name = _G._USER_NAME or "admin"
     relentless_data.update = "владивосток_россия_2026"
 end
 
