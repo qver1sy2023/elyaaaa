@@ -438,6 +438,7 @@ local menu = {
         custom_scope_overlay_position = main_group:slider("Position", 0, 50, 5),
         custom_scope_overlay_offset = main_group:slider("Offset", 15, 300, 100),
         cross_indicator = main_group:checkbox("Crosshair Indicators"),
+        cross_indicator_style = main_group:combobox("Indicator Style", "Default", "Modern"),
         cross_indicator_color = main_group:color_picker("\n", 255, 255, 255, 255),
         bullet_line = main_group:checkbox('Bullet Tracer'),
         bullet_line_color = main_group:color_picker('\n', 255, 255, 255, 175),
@@ -622,6 +623,7 @@ menu.visuals.custom_scope_overlay_position:depend({menu.visuals.custom_scope, tr
 menu.visuals.damage_indicator:depend(vis_tab)
 menu.visuals.damage_indicator_select:depend({menu.visuals.damage_indicator, true}, vis_tab)
 menu.visuals.cross_indicator:depend(vis_tab)
+menu.visuals.cross_indicator_style:depend(vis_tab, {menu.visuals.cross_indicator, true})
 menu.visuals.cross_indicator_color:depend(vis_tab, {menu.visuals.cross_indicator, true})
 menu.visuals.manual_arrows:depend(vis_tab)
 menu.visuals.manual_arrows_color:depend(vis_tab, {menu.visuals.manual_arrows, true})
@@ -740,7 +742,9 @@ for i=1, #aa_config do
    yaw_left = main_group:slider('Yaw \v~\r Left [' .. aa_config[i] .. ']', -180, 180, 0, true, '°', 1),
    yaw_right = main_group:slider('Yaw \v~\r Right [' .. aa_config[i] .. ']', -180, 180, 0, true, '°', 1),
    yaw_random = main_group:slider('Randomize \v~\r Yaw [' .. aa_config[i] .. ']', 0, 100, 0, true, '%', 1),
-   yaw_delay_tickrate = main_group:label("Soon.."),
+   yaw_phase_speed = main_group:slider("Phase \v~\r Speed [" .. aa_config[i] .. "]", 1, 20, 4, true, 't', 1),
+   yaw_phase_offset = main_group:slider("Phase \v~\r Offset [" .. aa_config[i] .. "]", -180, 180, 0, true, '°', 1),
+   yaw_phase_amplitude = main_group:slider("Phase \v~\r Amplitude [" .. aa_config[i] .. "]", 1, 100, 50, true, '%', 1),
    yaw_delay_default = main_group:slider("Delay \v~\r Ticks [" .. aa_config[i] .. "]", 1, 10, 4, true, 't', 1),
    yaw_delay_min = main_group:slider("Min \v~\r Ticks [" .. aa_config[i] .. "]", 1, 50, 1, true, "t", 1),
    yaw_delay_max = main_group:slider("Max \v~\r Ticks [" .. aa_config[i] .. "]", 1, 50, 1, true, "t", 1),
@@ -758,7 +762,7 @@ for i=1, #aa_config do
    jitter_label = main_group:label("\n"),
    jitter_text = main_group:label("\v•\r Jitter"),
    jitter_poloska = main_group:label("\a373737FF‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾"),
-   modifier_type = main_group:combobox('Modifier \v~\r Type [' .. aa_config[i] .. ']', 'Off', 'Center', 'Offset', 'Random', 'Skitter', "5-Way", "UKRAINA", "Relentless", "Maksim"),
+   modifier_type = main_group:combobox('Modifier \v~\r Type [' .. aa_config[i] .. ']', 'Off', 'Center', 'Offset', 'Random', 'Skitter', "5-Way", "UKRAINA", "Relentless", "Maksim", "Anti-NL", "Anti-Skeet", "Yaw"),
    modifier_type_method = main_group:slider('Modifier \v~\r Method [' .. aa_config[i] .. ']', 1, 2, 1, true, '',1, {[1] = "Default", [2] = "Switch"}),
    modifier_type_method_left = main_group:slider('Modifier \v~\r Left [' .. aa_config[i] .. ']', -180, 180, 0, true, '°', 1),
    modifier_type_method_right = main_group:slider('Modifier \v~\r Right [' .. aa_config[i] .. ']', -180, 180, 0, true, '°', 1),
@@ -780,6 +784,15 @@ for i=1, #aa_config do
    way3 = main_group:slider("3-Way", -180, 180, 1, true, '°', 1),
    way4 = main_group:slider("4-Way", -180, 180, 1, true, '°', 1),
    way5 = main_group:slider("5-Way", -180, 180, 1, true, '°', 1),
+   
+   -- Anti-NL/Anti-Skeet/Yaw elements
+   anti_nl_speed = main_group:slider("Anti-NL \v~\r Speed [" .. aa_config[i] .. "]", 1, 20, 8, true, 't', 1),
+   anti_nl_offset = main_group:slider("Anti-NL \v~\r Offset [" .. aa_config[i] .. "]", -180, 180, 0, true, '°', 1),
+   anti_skeet_speed = main_group:slider("Anti-Skeet \v~\r Speed [" .. aa_config[i] .. "]", 1, 20, 12, true, 't', 1),
+   anti_skeet_offset = main_group:slider("Anti-Skeet \v~\r Offset [" .. aa_config[i] .. "]", -180, 180, 0, true, '°', 1),
+   yaw_modifier_left = main_group:slider("Yaw \v~\r Left [" .. aa_config[i] .. "]", -180, 180, -45, true, '°', 1),
+   yaw_modifier_right = main_group:slider("Yaw \v~\r Right [" .. aa_config[i] .. "]", -180, 180, 45, true, '°', 1),
+   yaw_modifier_speed = main_group:slider("Yaw \v~\r Speed [" .. aa_config[i] .. "]", 1, 20, 4, true, 't', 1),
    desync_label = main_group:label("\n"),
    desync_text = main_group:label("\v•\r Desync"),
    desync_poloska = main_group:label("\a373737FF‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾"),
@@ -810,12 +823,14 @@ for i = 1, #aa_config do
     builder[i].delay_type:depend(enabled, active, builder_tab, {builder[i].yaw_type, 2})
     --builder[i].yaw_delay_random1:depend({builder[i].body_yaw_delay, 'Min/Max'}, {builder[i].body_yaw, 'Tick'}, enabled, active, builder_tab, aa_tab)
     --builder[i].yaw_delay_random2:depend({builder[i].body_yaw_delay, 'Min/Max'}, {builder[i].body_yaw, 'Tick'}, enabled, active, builder_tab, aa_tab)
-    builder[i].yaw_left:depend({builder[i].yaw_type, 1, 2}, enabled, active, builder_tab)
-    builder[i].yaw_right:depend({builder[i].yaw_type, 1, 2},  enabled, active, builder_tab)
-    builder[i].yaw_random:depend(enabled, active, builder_tab, {builder[i].yaw_type, 1, 2})
+    builder[i].yaw_left:depend({builder[i].yaw_type, 1, 2, 3}, enabled, active, builder_tab)
+    builder[i].yaw_right:depend({builder[i].yaw_type, 1, 2, 3},  enabled, active, builder_tab)
+    builder[i].yaw_random:depend(enabled, active, builder_tab, {builder[i].yaw_type, 1, 2, 3})
     --делеи
 
-    builder[i].yaw_delay_tickrate:depend({builder[i].yaw_type, 3}, enabled, active, builder_tab)
+    builder[i].yaw_phase_speed:depend({builder[i].yaw_type, 3}, enabled, active, builder_tab)
+    builder[i].yaw_phase_offset:depend({builder[i].yaw_type, 3}, enabled, active, builder_tab)
+    builder[i].yaw_phase_amplitude:depend({builder[i].yaw_type, 3}, enabled, active, builder_tab)
     builder[i].yaw_delay_default:depend({builder[i].yaw_type, 2}, {builder[i].delay_type, 2}, enabled, active, builder_tab)
     builder[i].yaw_delay_min:depend({builder[i].yaw_type, 2}, {builder[i].delay_type, 3}, enabled, active, builder_tab)
     builder[i].yaw_delay_max:depend({builder[i].yaw_type, 2}, {builder[i].delay_type, 3}, enabled, active, builder_tab)
@@ -855,6 +870,15 @@ for i = 1, #aa_config do
     builder[i].way3:depend({builder[i].modifier_type, '5-Way'}, active, enabled, builder_tab)
     builder[i].way4:depend({builder[i].modifier_type, '5-Way'}, active, enabled, builder_tab)
     builder[i].way5:depend({builder[i].modifier_type, '5-Way'}, active, enabled, builder_tab)
+    
+    -- Зависимости для новых элементов
+    builder[i].anti_nl_speed:depend({builder[i].modifier_type, 'Anti-NL'}, active, enabled, builder_tab)
+    builder[i].anti_nl_offset:depend({builder[i].modifier_type, 'Anti-NL'}, active, enabled, builder_tab)
+    builder[i].anti_skeet_speed:depend({builder[i].modifier_type, 'Anti-Skeet'}, active, enabled, builder_tab)
+    builder[i].anti_skeet_offset:depend({builder[i].modifier_type, 'Anti-Skeet'}, active, enabled, builder_tab)
+    builder[i].yaw_modifier_left:depend({builder[i].modifier_type, 'Yaw'}, active, enabled, builder_tab)
+    builder[i].yaw_modifier_right:depend({builder[i].modifier_type, 'Yaw'}, active, enabled, builder_tab)
+    builder[i].yaw_modifier_speed:depend({builder[i].modifier_type, 'Yaw'}, active, enabled, builder_tab)
     builder[i].body_yaw:depend(enabled, active, builder_tab)
     builder[i].force_lc:depend(enabled, active, builder_tab)
     builder[i].body_amount:depend({builder[i].body_yaw, 'Jitter', 'Opposite', 'Static'}, enabled, active, builder_tab)
@@ -875,7 +899,7 @@ for i=1, #aa_config do
         spacing_1 = main_group:label('\n'),
         yaw_label = main_group:label('\v•\r Defensive Yaw'),
         yaw_poloska = main_group:label('\a373737FF‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾'),
-        yaw_mode = main_group:combobox('Yaw \v~\r Mode [' .. aa_config[i] .. ']', 'Off', '180', 'Spin', 'Sway', 'Distortion', 'Sideways', 'Random', 'Jitter', '3-Way', '5-Way'),
+        yaw_mode = main_group:combobox('Yaw \v~\r Mode [' .. aa_config[i] .. ']', 'Off', '180', 'Spin', 'Sway', 'Distortion', 'Sideways', 'Random', 'Jitter', '3-Way', '5-Way', 'Anti-NL', 'Anti-Skeet'),
         yaw_speed = main_group:slider('Yaw \v~\r Speed [' .. aa_config[i] .. ']', 1, 20, 4, true, 't'),
         yaw_offset = main_group:slider('Yaw \v~\r Offset [' .. aa_config[i] .. ']', -180, 180, 0, true, '°'),
         yaw_left = main_group:slider('Yaw \v~\r Left [' .. aa_config[i] .. ']', -180, 180, -45, true, '°'),
@@ -884,7 +908,7 @@ for i=1, #aa_config do
         spacing_2 = main_group:label('\n'),
         pitch_label = main_group:label('\v•\r Defensive Pitch'),
         pitch_poloska = main_group:label('\a373737FF‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾'),
-        pitch_mode = main_group:combobox('Pitch \v~\r Mode [' .. aa_config[i] .. ']', 'Off', 'Up', 'Down', 'Zero', 'Random', 'Spin', 'Sway', 'Jitter', 'Custom'),
+        pitch_mode = main_group:combobox('Pitch \v~\r Mode [' .. aa_config[i] .. ']', 'Off', 'Up', 'Down', 'Zero', 'Random', 'Spin', 'Sway', 'Jitter', 'Custom', 'Anti-NL', 'Anti-Skeet'),
         pitch_speed = main_group:slider('Pitch \v~\r Speed [' .. aa_config[i] .. ']', 1, 20, 2, true, 't'),
         pitch_value = main_group:slider('Pitch \v~\r Value [' .. aa_config[i] .. ']', -89, 89, 0, true, '°'),
         pitch_min = main_group:slider('Pitch \v~\r Min [' .. aa_config[i] .. ']', -89, 89, -45, true, '°'),
@@ -904,8 +928,8 @@ for i = 1, #aa_config do
     defensive[i].yaw_label:depend(enabled, active, defensive_tab)
     defensive[i].yaw_poloska:depend(enabled, active, defensive_tab)
     defensive[i].yaw_mode:depend(enabled, active, defensive_tab)
-    defensive[i].yaw_speed:depend(enabled, active, defensive_tab, {defensive[i].yaw_mode, 'Off', true}, {defensive[i].yaw_mode, '180', true}, {defensive[i].yaw_mode, 'Random', true})
-    defensive[i].yaw_offset:depend(enabled, active, defensive_tab, {defensive[i].yaw_mode, 'Off', true}, {defensive[i].yaw_mode, 'Jitter', true}, {defensive[i].yaw_mode, '3-Way', true}, {defensive[i].yaw_mode, '5-Way', true})
+    defensive[i].yaw_speed:depend(enabled, active, defensive_tab, {defensive[i].yaw_mode, 'Off', true}, {defensive[i].yaw_mode, '180', true}, {defensive[i].yaw_mode, 'Random', true}, {defensive[i].yaw_mode, 'Anti-NL', true}, {defensive[i].yaw_mode, 'Anti-Skeet', true})
+    defensive[i].yaw_offset:depend(enabled, active, defensive_tab, {defensive[i].yaw_mode, 'Off', true}, {defensive[i].yaw_mode, 'Jitter', true}, {defensive[i].yaw_mode, '3-Way', true}, {defensive[i].yaw_mode, '5-Way', true}, {defensive[i].yaw_mode, 'Anti-NL', true}, {defensive[i].yaw_mode, 'Anti-Skeet', true})
     defensive[i].yaw_left:depend(enabled, active, defensive_tab, {defensive[i].yaw_mode, 'Jitter'})
     defensive[i].yaw_right:depend(enabled, active, defensive_tab, {defensive[i].yaw_mode, 'Jitter'})
     
@@ -913,7 +937,7 @@ for i = 1, #aa_config do
     defensive[i].pitch_label:depend(enabled, active, defensive_tab)
     defensive[i].pitch_poloska:depend(enabled, active, defensive_tab)
     defensive[i].pitch_mode:depend(enabled, active, defensive_tab)
-    defensive[i].pitch_speed:depend(enabled, active, defensive_tab, {defensive[i].pitch_mode, 'Off', true}, {defensive[i].pitch_mode, 'Up', true}, {defensive[i].pitch_mode, 'Down', true}, {defensive[i].pitch_mode, 'Zero', true}, {defensive[i].pitch_mode, 'Random', true}, {defensive[i].pitch_mode, 'Custom', true})
+    defensive[i].pitch_speed:depend(enabled, active, defensive_tab, {defensive[i].pitch_mode, 'Off', true}, {defensive[i].pitch_mode, 'Up', true}, {defensive[i].pitch_mode, 'Down', true}, {defensive[i].pitch_mode, 'Zero', true}, {defensive[i].pitch_mode, 'Random', true}, {defensive[i].pitch_mode, 'Custom', true}, {defensive[i].pitch_mode, 'Anti-NL', true}, {defensive[i].pitch_mode, 'Anti-Skeet', true})
     defensive[i].pitch_value:depend(enabled, active, defensive_tab, {defensive[i].pitch_mode, 'Custom'})
     defensive[i].pitch_min:depend(enabled, active, defensive_tab, {defensive[i].pitch_mode, 'Jitter'})
     defensive[i].pitch_max:depend(enabled, active, defensive_tab, {defensive[i].pitch_mode, 'Jitter'})
@@ -1281,6 +1305,32 @@ end
 
 logger.hitboxes = {"generic", "head", "chest", "stomach", "left arm", "right arm", "left leg", "right leg", "neck", "?", "gear"}
 
+-- Функция для безопасного получения имени игрока
+local function get_safe_player_name(target)
+    if not target then
+        return "invalid"
+    end
+    
+    -- Проверяем, что это валидная энтити
+    if not entity.is_alive(target) and not entity.get_prop(target, "m_iHealth") then
+        return "disconnected"
+    end
+    
+    local name = entity.get_player_name(target)
+    if name and name ~= "" and name ~= "unconnected" then
+        return name
+    end
+    
+    -- Попробуем получить Steam ID для более читаемого имени
+    local steam_id = entity.get_steam64(target)
+    if steam_id and steam_id ~= 0 then
+        return "Player#" .. tostring(steam_id):sub(-4)
+    end
+    
+    -- В крайнем случае используем ID энтити
+    return "Player#" .. tostring(target)
+end
+
 logger.on_aim_fire = function(e)
     local p_ent = e.target
     local me = entity.get_local_player()
@@ -1314,6 +1364,7 @@ end
 logger.on_aim_hit = function(e)
     if not menu.visuals.aimbot_logger:get() then return end
     if not menu.visuals.aimbot_logger_type:get('Console') then return end
+    if not e.target or not entity.get_prop(e.target, "m_iHealth") then return end
 
     if logger[e.id] == nil then
         return 
@@ -1329,7 +1380,7 @@ end
         type = math.max(0, entity.get_prop(e.target, 'm_iHealth')) > 0,
         prefix = {menu.visuals.main_colors:get()},
         hit = {menu.visuals.main_colors:get()},
-        name = entity.get_player_name(e.target),
+        name = get_safe_player_name(e.target),
         hitgroup = logger.hitboxes[e.hitgroup + 1] or '?',
         flags = string.format('%s', table.concat(logger.generate_flags(logger[e.id]))),
         aimed_hitgroup = logger.hitboxes[logger[e.id].original.hitgroup + 1] or '?',
@@ -1379,6 +1430,7 @@ end
 logger.on_aim_miss = function(e)
     if not menu.visuals.aimbot_logger:get() then return end
     if not menu.visuals.aimbot_logger_type:get('Console') then return end
+    if not e.target or not entity.get_prop(e.target, "m_iHealth") then return end
     local prefix1 = ""
     if menu.visuals.aimbot_logger_prefix:get() == "Default" then
     prefix1 = "relentless"
@@ -1390,7 +1442,7 @@ end
     local info = {
         prefix = {menu.visuals.ragebot_miss:get()},
         hit = {menu.visuals.ragebot_miss:get()},
-        name = entity.get_player_name(e.target),
+        name = get_safe_player_name(e.target),
         hitgroup = logger.hitboxes[e.hitgroup + 1] or '?',
         flags = string.format('%s', _G.table.concat(logger.generate_flags(logger[e.id]))),
         aimed_hitgroup = logger.hitboxes[logger[e.id].original.hitgroup + 1] or '?',
@@ -1431,7 +1483,7 @@ logger.on_item_purchase = function(e)
     if not entity.is_enemy(ent) then return end
     ui.set(ref.purchases, false)
 
-    local name = entity.get_player_name(ent)
+    local name = get_safe_player_name(ent)
     local weapon = e.weapon
     if weapon == "weapon_unknown" then return end
 
@@ -1463,16 +1515,20 @@ local hitgroup_names = {'generic', 'head', 'chest', 'stomach', 'left arm', 'righ
 local function aim_hit1(e)
     if not menu.visuals.aimbot_logger:get() then return end
     if not menu.visuals.aimbot_logger_type:get('Screen') then return end
+    if not e.target or not entity.get_prop(e.target, "m_iHealth") then return end
+    
     local group = hitgroup_names[e.hitgroup + 1] or '?'
-    notifications.new(string.format('Hit %s in the %s for %d damage', entity.get_player_name(e.target) or "unknown", group, e.damage or 0), 255, 255, 255, 255)
+    notifications.new(string.format('Hit %s in the %s for %d damage', get_safe_player_name(e.target), group, e.damage or 0), 255, 255, 255, 255)
 end
 
 
 local function aim_miss1(e)
     if not menu.visuals.aimbot_logger:get() then return end
     if not menu.visuals.aimbot_logger_type:get('Screen') then return end
+    if not e.target or not entity.get_prop(e.target, "m_iHealth") then return end
+    
     local group = hitgroup_names[e.hitgroup + 1] or '?'
-    notifications.new(string.format('Missed %s in the %s due to %s', entity.get_player_name(e.target) or "unknown", group, e.reason or "?"), 255, 255, 255, 255)
+    notifications.new(string.format('Missed %s in the %s due to %s', get_safe_player_name(e.target), group, e.reason or "?"), 255, 255, 255, 255)
 end
 
 
@@ -1874,6 +1930,48 @@ elseif builder[id].flicker:get() == 2 and mod_type ~= "Off" then
         ui.set(ref.yawjitter[2], builder[id].flick3:get())
     end
 
+elseif mod_type == "Anti-NL" then
+    -- Anti-NeverLose логика - быстрые, непредсказуемые движения
+    local time = globals.realtime()
+    local speed = builder[id].anti_nl_speed:get()
+    local offset = builder[id].anti_nl_offset:get()
+    
+    local nl_pattern = math.sin(time * speed) * 60 + math.cos(time * speed * 1.5) * 30
+    local jitter_value = nl_pattern + offset + math.random(-15, 15)
+    
+    ui.set(ref.yawjitter[1], "Center")
+    ui.set(ref.yawjitter[2], clamp(jitter_value, -180, 180))
+
+elseif mod_type == "Anti-Skeet" then
+    -- Anti-Skeet логика - специфичные паттерны против skeet
+    local time = globals.realtime()
+    local speed = builder[id].anti_skeet_speed:get()
+    local offset = builder[id].anti_skeet_offset:get()
+    
+    local skeet_pattern = math.sin(time * speed * 0.8) * 45 + math.sin(time * speed * 2.3) * 25
+    local jitter_value = skeet_pattern + offset
+    
+    -- Добавляем случайные спайки для непредсказуемости
+    if globals.tickcount() % 8 == 0 then
+        jitter_value = jitter_value + math.random(-90, 90)
+    end
+    
+    ui.set(ref.yawjitter[1], "Offset")
+    ui.set(ref.yawjitter[2], clamp(jitter_value, -180, 180))
+
+elseif mod_type == "Yaw" then
+    -- Yaw modifier - переключение между левым и правым значениями
+    local time = globals.realtime()
+    local speed = builder[id].yaw_modifier_speed:get()
+    local left_val = builder[id].yaw_modifier_left:get()
+    local right_val = builder[id].yaw_modifier_right:get()
+    
+    local phase = math.sin(time * speed)
+    local jitter_value = phase > 0 and left_val or right_val
+    
+    ui.set(ref.yawjitter[1], "Static")
+    ui.set(ref.yawjitter[2], jitter_value)
+
 elseif builder[id].modifier_type_method:get() == 2 and (mod_type == "Center" or mod_type == "Offset" or mod_type == "Random" or mod_type == "Skitter") then
     ui.set(ref.yawjitter[1], mod_type)
     ui.set(ref.yawjitter[2], builder[id].modifier_type_method_left:get() + -builder[id].modifier_type_method_right:get())
@@ -1887,10 +1985,39 @@ end
 
     local desync_type = entity.get_prop(lp, 'm_flPoseParameter', 11) * 120 - 60
     local desync_side = desync_type > 0 
-
-    local yaw_amount = (desync_side and randomize(builder[id].yaw_left:get(), builder[id].yaw_random:get()) or 
-                        randomize(builder[id].yaw_right:get(), builder[id].yaw_random:get())) or 
-                        (desync_side and builder[id].yaw_left:get() or builder[id].yaw_right:get())
+    local yaw_type = builder[id].yaw_type:get()
+    
+    local yaw_amount
+    
+    if yaw_type == 3 then -- L&R Phase
+        local time = globals.realtime()
+        local speed = builder[id].yaw_phase_speed:get()
+        local offset = builder[id].yaw_phase_offset:get()
+        local amplitude = builder[id].yaw_phase_amplitude:get() / 100
+        
+        -- Фазовое переключение между левым и правым значениями
+        local phase = math.sin(time * speed) * amplitude
+        local left_value = builder[id].yaw_left:get()
+        local right_value = builder[id].yaw_right:get()
+        
+        -- Интерполяция между левым и правым значениями на основе фазы
+        if phase > 0 then
+            yaw_amount = left_value + (phase * (right_value - left_value)) + offset
+        else
+            yaw_amount = right_value + (math.abs(phase) * (left_value - right_value)) + offset
+        end
+        
+        -- Добавляем рандомизацию если включена
+        local random_value = builder[id].yaw_random:get()
+        if random_value > 0 then
+            local random_offset = math.random(-random_value, random_value) / 100 * (right_value - left_value)
+            yaw_amount = yaw_amount + random_offset
+        end
+    else
+        yaw_amount = (desync_side and randomize(builder[id].yaw_left:get(), builder[id].yaw_random:get()) or 
+                            randomize(builder[id].yaw_right:get(), builder[id].yaw_random:get())) or 
+                            (desync_side and builder[id].yaw_left:get() or builder[id].yaw_right:get())
+    end
 
     ui.set(ref.yaw[2], yaw_direction == 0 and yaw_amount or yaw_direction)
 
@@ -1948,126 +2075,159 @@ end
         end
     end
 
-    alive_players = {}
-
--- Defensive AA Logic
-local function get_tickbase_shift()
-    local me = entity.get_local_player()
-    if not me or not entity.is_alive(me) then return 0 end
-    
-    local tickbase = entity.get_prop(me, "m_nTickBase")
-    if not tickbase then return 0 end
-    
-    local simtime_diff = tickbase - (globals.tickcount() + client.latency() / globals.tickinterval())
-    return math.floor(simtime_diff)
-end
-
-local function is_defensive_active()
-    local shift = get_tickbase_shift()
-    return shift < -1 and shift >= -14
-end
-
--- Apply defensive AA if active
-if defensive[id] and defensive[id].state:get() and is_defensive_active() then
-    local def_cfg = defensive[id]
-    
-    -- Check if defensive should work on current exploit
-    local work_on = def_cfg.defensive_on:get()
-    local dt_active = ui.get(ref.dt[1]) and ui.get(ref.dt[2])
-    local hs_active = ui.get(ref.hs[1]) and ui.get(ref.hs[2])
-    
-    local should_work = false
-    for i = 1, #work_on do
-        if work_on[i] == "Double tap" and dt_active then should_work = true end
-        if work_on[i] == "Hide shots" and hs_active then should_work = true end
+    -- Defensive AA Logic
+    local function get_tickbase_shift()
+        local me = entity.get_local_player()
+        if not me or not entity.is_alive(me) then return 0 end
+        
+        local tickbase = entity.get_prop(me, "m_nTickBase")
+        local simtime_diff = tickbase - (globals.tickcount() + client.latency() / globals.tickinterval())
+        return math.floor(simtime_diff)
     end
-    
-    if should_work then
-        -- Apply defensive pitch
-        local pitch_mode = def_cfg.pitch_mode:get()
-        if pitch_mode ~= "Off" then
-            if pitch_mode == "Up" then
-                ui.set(ref.pitch[1], "Up")
-            elseif pitch_mode == "Down" then
-                ui.set(ref.pitch[1], "Down")
-            elseif pitch_mode == "Zero" then
-                ui.set(ref.pitch[1], "Custom")
-                ui.set(ref.pitch[2], 0)
-            elseif pitch_mode == "Custom" then
-                ui.set(ref.pitch[1], "Custom")
-                ui.set(ref.pitch[2], def_cfg.pitch_value:get())
-            elseif pitch_mode == "Random" then
-                ui.set(ref.pitch[1], "Custom")
-                ui.set(ref.pitch[2], client.random_int(-89, 89))
-            elseif pitch_mode == "Jitter" then
-                local phase = globals.tickcount() % 2
-                ui.set(ref.pitch[1], "Custom")
-                ui.set(ref.pitch[2], phase == 0 and def_cfg.pitch_min:get() or def_cfg.pitch_max:get())
-            elseif pitch_mode == "Spin" then
-                local speed = def_cfg.pitch_speed:get()
-                ui.set(ref.pitch[1], "Custom")
-                ui.set(ref.pitch[2], math.sin(globals.realtime() * speed) * 89)
-            elseif pitch_mode == "Sway" then
-                local speed = def_cfg.pitch_speed:get()
-                ui.set(ref.pitch[1], "Custom")
-                ui.set(ref.pitch[2], math.sin(globals.realtime() * speed) * 89 * (math.cos(globals.realtime() * speed * 0.5) + 1) / 2)
-            end
+
+    local function is_defensive_active()
+        local shift = get_tickbase_shift()
+        return shift < -1 and shift >= -14
+    end
+
+    -- Apply defensive AA if active
+    if defensive[id] and defensive[id].state:get() and is_defensive_active() then
+        local def_cfg = defensive[id]
+        
+        -- Check if defensive should work on current exploit
+        local work_on = def_cfg.defensive_on:get()
+        local dt_active = ui.get(ref.dt[1]) and ui.get(ref.dt[2])
+        local hs_active = ui.get(ref.hs[1]) and ui.get(ref.hs[2])
+        
+        local should_work = false
+        for i = 1, #work_on do
+            if work_on[i] == "Double tap" and dt_active then should_work = true end
+            if work_on[i] == "Hide shots" and hs_active then should_work = true end
         end
         
-        -- Apply defensive yaw
-        local yaw_mode = def_cfg.yaw_mode:get()
-        if yaw_mode ~= "Off" then
-            if yaw_mode == "180" then
-                ui.set(ref.yaw[2], 180)
-                ui.set(ref.yawjitter[1], "Off")
-            elseif yaw_mode == "Spin" then
-                local speed = def_cfg.yaw_speed:get()
-                ui.set(ref.yaw[2], (globals.realtime() * speed * 180) % 360 - 180)
-                ui.set(ref.yawjitter[1], "Off")
-            elseif yaw_mode == "Jitter" then
-                local phase = globals.tickcount() % 2
-                ui.set(ref.yaw[2], phase == 0 and def_cfg.yaw_left:get() or def_cfg.yaw_right:get())
-                ui.set(ref.yawjitter[1], "Off")
-            elseif yaw_mode == "Random" then
-                ui.set(ref.yaw[2], client.random_int(-180, 180))
-                ui.set(ref.yawjitter[1], "Off")
-            elseif yaw_mode == "Sway" then
-                local speed = def_cfg.yaw_speed:get()
-                local offset = def_cfg.yaw_offset:get()
-                ui.set(ref.yaw[2], offset + math.sin(globals.realtime() * speed) * 60)
-                ui.set(ref.yawjitter[1], "Off")
+        if should_work then
+            -- Apply defensive pitch
+            local pitch_mode = def_cfg.pitch_mode:get()
+            if pitch_mode ~= "Off" then
+                if pitch_mode == "Up" then
+                    ui.set(ref.pitch[1], "Up")
+                elseif pitch_mode == "Down" then
+                    ui.set(ref.pitch[1], "Down")
+                elseif pitch_mode == "Zero" then
+                    ui.set(ref.pitch[1], "Custom")
+                    ui.set(ref.pitch[2], 0)
+                elseif pitch_mode == "Custom" then
+                    ui.set(ref.pitch[1], "Custom")
+                    ui.set(ref.pitch[2], def_cfg.pitch_value:get())
+                elseif pitch_mode == "Random" then
+                    ui.set(ref.pitch[1], "Custom")
+                    ui.set(ref.pitch[2], client.random_int(-89, 89))
+                elseif pitch_mode == "Jitter" then
+                    local phase = globals.tickcount() % 2
+                    ui.set(ref.pitch[1], "Custom")
+                    ui.set(ref.pitch[2], phase == 0 and def_cfg.pitch_min:get() or def_cfg.pitch_max:get())
+                elseif pitch_mode == "Spin" then
+                    local speed = def_cfg.pitch_speed:get()
+                    ui.set(ref.pitch[1], "Custom")
+                    ui.set(ref.pitch[2], math.sin(globals.realtime() * speed) * 89)
+                elseif pitch_mode == "Sway" then
+                    local speed = def_cfg.pitch_speed:get()
+                    ui.set(ref.pitch[1], "Custom")
+                    ui.set(ref.pitch[2], math.sin(globals.realtime() * speed) * 89 * (math.cos(globals.realtime() * speed * 0.5) + 1) / 2)
+                elseif pitch_mode == "Anti-NL" then
+                    local speed = def_cfg.pitch_speed:get()
+                    local time = globals.realtime()
+                    local nl_pitch = math.sin(time * speed * 1.5) * 60 + math.cos(time * speed * 2.2) * 29
+                    ui.set(ref.pitch[1], "Custom")
+                    ui.set(ref.pitch[2], clamp(nl_pitch, -89, 89))
+                elseif pitch_mode == "Anti-Skeet" then
+                    local speed = def_cfg.pitch_speed:get()
+                    local time = globals.realtime()
+                    local skeet_pitch = math.sin(time * speed * 0.9) * 89
+                    -- Добавляем случайные спайки
+                    if globals.tickcount() % 4 == 0 then
+                        skeet_pitch = math.random(-89, 89)
+                    end
+                    ui.set(ref.pitch[1], "Custom")
+                    ui.set(ref.pitch[2], clamp(skeet_pitch, -89, 89))
+                end
+            end
+            
+            -- Apply defensive yaw
+            local yaw_mode = def_cfg.yaw_mode:get()
+            if yaw_mode ~= "Off" then
+                if yaw_mode == "180" then
+                    ui.set(ref.yaw[2], 180)
+                    ui.set(ref.yawjitter[1], "Off")
+                elseif yaw_mode == "Spin" then
+                    local speed = def_cfg.yaw_speed:get()
+                    ui.set(ref.yaw[2], (globals.realtime() * speed * 180) % 360 - 180)
+                    ui.set(ref.yawjitter[1], "Off")
+                elseif yaw_mode == "Jitter" then
+                    local phase = globals.tickcount() % 2
+                    ui.set(ref.yaw[2], phase == 0 and def_cfg.yaw_left:get() or def_cfg.yaw_right:get())
+                    ui.set(ref.yawjitter[1], "Off")
+                elseif yaw_mode == "Random" then
+                    ui.set(ref.yaw[2], client.random_int(-180, 180))
+                    ui.set(ref.yawjitter[1], "Off")
+                elseif yaw_mode == "Sway" then
+                    local speed = def_cfg.yaw_speed:get()
+                    local offset = def_cfg.yaw_offset:get()
+                    ui.set(ref.yaw[2], offset + math.sin(globals.realtime() * speed) * 60)
+                    ui.set(ref.yawjitter[1], "Off")
+                elseif yaw_mode == "Anti-NL" then
+                    -- Anti-NeverLose defensive yaw
+                    local speed = def_cfg.yaw_speed:get()
+                    local offset = def_cfg.yaw_offset:get()
+                    local time = globals.realtime()
+                    local nl_pattern = math.sin(time * speed) * 90 + math.cos(time * speed * 1.8) * 45
+                    ui.set(ref.yaw[2], clamp(nl_pattern + offset, -180, 180))
+                    ui.set(ref.yawjitter[1], "Off")
+                elseif yaw_mode == "Anti-Skeet" then
+                    -- Anti-Skeet defensive yaw
+                    local speed = def_cfg.yaw_speed:get()
+                    local offset = def_cfg.yaw_offset:get()
+                    local time = globals.realtime()
+                    local skeet_pattern = math.sin(time * speed * 0.7) * 120 + math.sin(time * speed * 2.5) * 60
+                    -- Добавляем резкие изменения каждые несколько тиков
+                    if globals.tickcount() % 6 == 0 then
+                        skeet_pattern = skeet_pattern + math.random(-180, 180)
+                    end
+                    ui.set(ref.yaw[2], clamp(skeet_pattern + offset, -180, 180))
+                    ui.set(ref.yawjitter[1], "Off")
+                end
             end
         end
     end
-end
 
+    -- Manual yaw override
     if manuals == 1 then
-    ui.set(ref.pitch[1], "down") 
-    ui.set(ref.yaw[1], '180')
-    ui.set(ref.yaw[2], -90)
-    ui.set(ref.yawbase, "At targets")
-    ui.set(ref.yawjitter[1], "Off")  
-    ui.set(ref.body_yaw[1], "Static")
-    ui.set(ref.body_yaw[2], 0)
-end
-if manuals == 2 then
-    ui.set(ref.pitch[1], "down") 
-    ui.set(ref.yaw[1], '180')
-    ui.set(ref.yaw[2], 90)
-    ui.set(ref.yawbase, "At targets")
-    ui.set(ref.yawjitter[1], "Off")  
-    ui.set(ref.body_yaw[1], "Static")
-    ui.set(ref.body_yaw[2], 0)
-end
-if manuals == 3 then
-    ui.set(ref.pitch[1], "down") 
-    ui.set(ref.yaw[1], '180')
-    ui.set(ref.yaw[2], 180)
-    ui.set(ref.yawbase, "At targets")
-    ui.set(ref.yawjitter[1], "Off")  
-    ui.set(ref.body_yaw[1], "Static")
-    ui.set(ref.body_yaw[2], 0)
-end
+        ui.set(ref.pitch[1], "down") 
+        ui.set(ref.yaw[1], '180')
+        ui.set(ref.yaw[2], -90)
+        ui.set(ref.yawbase, "At targets")
+        ui.set(ref.yawjitter[1], "Off")  
+        ui.set(ref.body_yaw[1], "Static")
+        ui.set(ref.body_yaw[2], 0)
+    elseif manuals == 2 then
+        ui.set(ref.pitch[1], "down") 
+        ui.set(ref.yaw[1], '180')
+        ui.set(ref.yaw[2], 90)
+        ui.set(ref.yawbase, "At targets")
+        ui.set(ref.yawjitter[1], "Off")  
+        ui.set(ref.body_yaw[1], "Static")
+        ui.set(ref.body_yaw[2], 0)
+    elseif manuals == 3 then
+        ui.set(ref.pitch[1], "down") 
+        ui.set(ref.yaw[1], '180')
+        ui.set(ref.yaw[2], 180)
+        ui.set(ref.yawbase, "At targets")
+        ui.set(ref.yawjitter[1], "Off")  
+        ui.set(ref.body_yaw[1], "Static")
+        ui.set(ref.body_yaw[2], 0)
+    end
+
+    alive_players = {}
 end
 
 
@@ -2079,6 +2239,11 @@ local watermark_texts = {
     {"renetless.pink"},
     {"1000$ TOURNAMENT OWNER"},
     {"desync.max"},
+    {"#rentlessforever"},
+    {"godlike.lua"},
+    {"The elephant danced on a car, crashed, saw relentless and laughed!"},
+    {"#relentlessonly"},
+    {"2500$ LEAGUE WINNER"},
     {"renesync.max"},
     {"jossysync.hvh"},
     {"keyl0w --> (｡♥‿♥｡)"},
@@ -2170,8 +2335,95 @@ local function check_charge()
 end
 
 local scoped_space = 0
+
+local function cross_ind_modern()
+    local lp = entity.get_local_player()
+    if lp == nil then return end
+    
+    local screen = {client.screen_size()}
+    local screen1 = {screen[1]/2, screen[2]/2}
+    local scpd = entity.get_prop(lp, "m_bIsScoped") == 1
+    scoped_space = helpers.math.speed(scoped_space, scpd and 1 or 0, 25)
+    
+    local main_r, main_g, main_b, main_a = menu.visuals.cross_indicator_color:get()
+    
+    -- Althea style - минималистичный и чистый
+    local offset_x = math.floor(scoped_space * 40)
+    local base_y = screen1[2] + 20
+    local spacing = 13
+    local current_y = base_y
+    
+    -- Название чита с градиентом
+    local aA = helpers.create_color_array(main_r, main_g, main_b, "relentless")
+    renderer.text(screen1[1] + offset_x, current_y, 255, 255, 255, 255, "c-", 0, string.format("\a%sR\a%sE\a%sL\a%sE\a%sN\a%sT\a%sL\a%sE\a%sS\a%sS", 
+        helpers.rgba_to_hex(unpack(aA[1])), 
+        helpers.rgba_to_hex(unpack(aA[2])), 
+        helpers.rgba_to_hex(unpack(aA[3])), 
+        helpers.rgba_to_hex(unpack(aA[4])), 
+        helpers.rgba_to_hex(unpack(aA[5])), 
+        helpers.rgba_to_hex(unpack(aA[6])),
+        helpers.rgba_to_hex(unpack(aA[7])),
+        helpers.rgba_to_hex(unpack(aA[8])),
+        helpers.rgba_to_hex(unpack(aA[9])),
+        helpers.rgba_to_hex(unpack(aA[10]))))
+    current_y = current_y + spacing
+    
+    -- Состояние
+    local condition = "GLOBAL"
+    if id == 1 then condition = "GLOBAL"
+    elseif id == 2 then condition = "STAND"
+    elseif id == 3 then condition = "SLOW"
+    elseif id == 4 then condition = "MOVE"
+    elseif id == 5 then condition = "AIR"
+    elseif id == 6 then condition = "AIR-C"
+    elseif id == 7 then condition = "DUCK"
+    elseif id == 8 then condition = "DUCK-M"
+    elseif id == 9 then condition = "FAKELAG"
+    elseif id == 10 then condition = "FS" end
+    
+    renderer.text(screen1[1] + offset_x, current_y, 220, 220, 220, 255, "c-", 0, "» " .. condition)
+    current_y = current_y + spacing
+    
+    -- Индикаторы с иконками
+    if ui.get(ref.dt[1]) and ui.get(ref.dt[2]) then
+        local dt_color = check_charge() and {150, 255, 150} or {255, 100, 100}
+        renderer.text(screen1[1] + offset_x, current_y, dt_color[1], dt_color[2], dt_color[3], 255, "c-", 0, "⚡ DT")
+        current_y = current_y + spacing
+    end
+    
+    if ui.get(ref.os[1]) and ui.get(ref.os[2]) then
+        renderer.text(screen1[1] + offset_x, current_y, 255, 200, 100, 255, "c-", 0, "◉ OS")
+        current_y = current_y + spacing
+    end
+    
+    if ui.get(ref.forcebaim) then
+        renderer.text(screen1[1] + offset_x, current_y, 255, 150, 150, 255, "c-", 0, "◎ BAIM")
+        current_y = current_y + spacing
+    end
+    
+    if ui.get(ref.minimum_damage_override[1]) and ui.get(ref.minimum_damage_override[2]) then
+        local dmg_value = ui.get(ref.mindamage)
+        renderer.text(screen1[1] + offset_x, current_y, 200, 200, 255, 255, "c-", 0, "⚔ " .. dmg_value)
+        current_y = current_y + spacing
+    end
+    
+    if menu.hotkeys.freestanding_yaw:get() then
+        renderer.text(screen1[1] + offset_x, current_y, 100, 255, 200, 255, "c-", 0, "↻ FS")
+        current_y = current_y + spacing
+    end
+end
+
 local function cross_ind()
-    if menu.visuals.cross_indicator:get() then
+    if not menu.visuals.cross_indicator:get() then return end
+    
+    local style = menu.visuals.cross_indicator_style:get()
+    
+    if style == "Modern" then
+        cross_ind_modern()
+        return
+    end
+    
+    -- Default style (оригинальный код)
     local lp = entity.get_local_player()
     if lp == nil then return end
     local screen = {client.screen_size()}
@@ -2235,7 +2487,6 @@ local function cross_ind()
             end
             spaceind = spaceind + 10
             end  
-       end
 end
 
 
@@ -3216,6 +3467,22 @@ local function hide_original_menu(state)
     ui.set_visible(ref.fakelagenabled[1], state)
     ui.set_visible(ref.fakelagenabled[2], state)
 end
+    ui.set_visible(ref.yaw[1], state)
+    ui.set_visible(ref.yaw[2], state)
+    ui.set_visible(ref.yawjitter[1], state)
+    ui.set_visible(ref.yawjitter[2], state)
+    ui.set_visible(ref.roll[1], state)
+    ui.set_visible(ref.body_yaw[1], state)
+    ui.set_visible(ref.body_yaw[2], state)
+    ui.set_visible(ref.fsbodyyaw[1], state)
+    ui.set_visible(ref.edgeyaw, state)
+    ui.set_visible(ref.freestanding[1], state)
+    ui.set_visible(ref.freestanding[2], state)
+    ui.set_visible(ref.fakelaglimit[1], state)
+    ui.set_visible(ref.fakelagvariance[1], state)
+    ui.set_visible(ref.fakelagamount[1], state)
+    ui.set_visible(ref.fakelagenabled[1], state)
+    ui.set_visible(ref.fakelagenabled[2], state)
 
 
 client.set_event_callback("paint_ui", function()
@@ -3582,4 +3849,57 @@ client.set_event_callback('shutdown', function()
     cvar.con_filter_text:set_string("")
     aspectratio(0)
     ui.set(ref.scope_overlay, true)
+end)
+
+client.set_event_callback("paint_ui", function()
+    hide_original_menu()
+    helpers.update_session()
+    ui.set(ref.scope_overlay, true)
+    
+    if menu.visuals.animated_zoom:get() then
+        local scoped = entity.get_prop(entity.get_local_player(), "m_bIsScoped")
+        if scoped then
+            ui.set(ref.fov, 90 + menu.visuals.animated_fov:get())
+        else
+            ui.set(ref.fov, 90)
+        end
+    end
+    
+    if menu.visuals.aspectratio:get() then
+        aspectratio(menu.visuals.aspectratio_value:get() / 100)
+    else
+        aspectratio(0)
+    end
+    
+    notifications.render()
+    watermark()
+    cross_ind()
+    mindmg()
+    velocity_ind()
+    manual_arrows()
+end)
+
+client.set_event_callback("setup_command", LPH_JIT_MAX(function(cmd)
+    ideal_tick(cmd)
+    aa_setup(cmd)
+    safe_head(cmd)
+    fastladder(cmd)
+end))
+
+client.set_event_callback("aim_hit", logger.on_aim_hit)
+client.set_event_callback("aim_miss", logger.on_aim_miss)
+client.set_event_callback("item_purchase", logger.on_item_purchase)
+client.set_event_callback("player_hurt", aim_hit1)
+client.set_event_callback("aim_miss", aim_miss1)
+client.set_event_callback("bullet_impact", bullet_line_help)
+client.set_event_callback("paint", function()
+    anim_breaker()
+    clantag()
+end)
+
+client.set_event_callback('shutdown', function()
+    hide_original_menu(true)
+    cvar.con_filter_enable:set_int(0)
+    cvar.con_filter_text:set_string("")
+    cvar.con_filter_text_out:set_string("")
 end)
