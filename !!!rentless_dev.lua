@@ -468,6 +468,7 @@ local menu = {
         killsay_select = main_group:multiselect("\nkillsay_select", "On kill", "On death", "Revenge"),
         hideshots_fix = main_group:checkbox("OSAA FIX"),
         clantag = main_group:checkbox("Clantag"),
+        jump_scout = main_group:checkbox('Jump Scout'),
         fakelag_exploit = main_group:checkbox("\aFD0540FF⚠️\rCustom Choke\aFD0540FF⚠️\r"),
         fakelag_exploit1 = main_group:label("Open Cheat tab misc -> settings -> sv_maxusrcmdprocessticks2"),
         fakelag_exploit2 = main_group:label("enable only in spectators")
@@ -654,6 +655,7 @@ menu.misc.killsay_mode:depend({menu.misc.killsay, true}, misc_tab)
 menu.misc.killsay_select:depend({menu.misc.killsay, true}, misc_tab)
 menu.misc.hideshots_fix:depend(misc_tab)
 menu.misc.clantag:depend(misc_tab)
+menu.misc.jump_scout:depend(misc_tab)
 menu.misc.fakelag_exploit:depend(misc_tab)
 menu.misc.fakelag_exploit1:depend(misc_tab, {menu.misc.fakelag_exploit, true})
 menu.misc.fakelag_exploit2:depend(misc_tab, {menu.misc.fakelag_exploit, true})
@@ -2822,16 +2824,6 @@ elseif watermark_type == "Custom" then
 end
 end
 
-
-http.get('https://raw.githubusercontent.com/PhantomHunter3/papulik/main/5c239dfd24215.jpg', function(s, r)
-    if s and r.status == 200 then
-        logo = images.load(r.body)
-    else
-        print("Failed to load image. Status:", r.status)
-    end
-end)
-
-
 client.set_event_callback("paint", function()
 end)
 
@@ -3097,15 +3089,15 @@ local scriptleakstop = 14
 
 local cfg_system = { }
 do
-    cfg_system.db = "kennex_mojet_ne_prosnutsa"
+    cfg_system.db = "funeral_is_legend_hvh"
 
-    local package, data, encrypted, decrypted = pui.setup({ menu, builder }), "", "", ""
+    local package, data, encrypted, decrypted = pui.setup({ menu, builder, defensive }), "", "", ""
 
     configs_db = database.read(cfg_system.db) or { }
     configs_db.cfg_list = configs_db.cfg_list or {{'Default', 'W3sic29jaWFsX2xpbmtzIjp7ImxpbmtzIjozfSwibWFpbiI6eyJjdXJyZW50X3RhYiI6M30sImhvdGtleXMiOnsiZnJlZXN0YW5kaW5nX3lhdyI6WzEsMTgsIn4iXSwibWFudWFsX2xlZnQiOlsxLDkwLCJ+Il0sIm1hbnVhbF9yaWdodCI6WzEsODgsIn4iXSwibWFudWFsX2ZvcndhcmQiOlsxLDc0LCJ+Il19LCJtaXNjIjp7ImZhc3RfbGFkZGVyIjp0cnVlLCJ1bnNhZmVfcmVjaGFyZ2UiOnRydWV9LCJhbnRpYWltIjp7ImFudGlhaW1fc2VsZWN0IjoiXHUwMDBiU3RhbmRcciJ9LCJjb25maWdzIjp7Imxpc3R0dCI6MX0sIm90aGVyIjp7ImF2b2lkX2JhY2tzdGFiX2Ftb3VudCI6MjQwLCJzYWZlX2hlYWQiOnRydWUsImF2b2lkX2JhY2tzdGFiIjp0cnVlLCJzYWZlX2hlYWRfc2VsZWN0IjpbIlpldXMiLCJ+Il19LCJ2aXN1YWxzIjp7ImNvbnNvbGVfZmlsdGVyIjp0cnVlLCJ3YXRlcm1hcmtfY29sb3IiOiIjQkQ2MEI1RkYiLCJ3YXRlcm1hcmtfbW9kZSI6IkN1c3RvbSIsInJhZ2Vib3RfaGl0IjoiIzc0QkQ2MEZGIiwid2F0ZXJtYXJrX3RleHQiOiJjaGVhdCByZXZlYWxlci5sdWEiLCJyYWdlYm90X21pc3MiOiIjQkQ2MzYwRkYiLCJhaW1ib3RfbG9nZ2VyIjp0cnVlfX0sW3sieWF3X3R5cGUiOjEsInlhd19kZWxheV9uZXdfNiI6MSwiYm9keV95YXciOiJPZmYiLCJ5YXdfZGVsYXlfbWF4IjoxLCJ5YXdfZGVsYXlfbmV3XzkiOjEsInlhd19kZWxheV9uZXdfMiI6MSwieWF3X3JhbmRvbSI6MCwibW9kaWZpZXJfdHlwZV9yYW5kb21pemUiOjAsInN3aXRjaF9jaGFuY2UiOjEsIm1vZGlmaWVyX3R5cGVfb2Zmc2V0IjowLCJ5YXdfZGVsYXlfbmV3XzUiOjEsImRlbGF5X3R5cGUiOjEsInlhd19kZWxheV9uZXdfNyI6MSwic3RhdGUiOmZhbHNlLCJ5YXdfZGVsYXlfbWluIjoxLCJ5YXdfZGVsYXlfbmV3XzgiOjEsInlhd19kZWxheV9uZXdfNCI6MSwiYm9keV9hbW91bnQiOjAsInlhd19kZWxheV9uZXdfMSI6MSwieWF3X2RlbGF5X25ld18zIjoxLCJtb2RpZmllcl90eXBlIjoiT2ZmIiwiZm9yY2VfbGMiOmZhbHNlLCJ5YXdfZGVsYXlfZGVmYXVsdCI6NCwieWF3X2xlZnQiOjAsInlhd19yaWdodCI6MCwieWF3X2RlbGF5X25ld18xMCI6MX0seyJ5YXdfdHlwZSI6MiwieWF3X2RlbGF5X25ld182IjoxLCJib2R5X3lhdyI6IkppdHRlciIsInlhd19kZWxheV9tYXgiOjgsInlhd19kZWxheV9uZXdfOSI6MSwieWF3X2RlbGF5X25ld18yIjoxLCJ5YXdfcmFuZG9tIjoxMSwibW9kaWZpZXJfdHlwZV9yYW5kb21pemUiOjAsInN3aXRjaF9jaGFuY2UiOjEsIm1vZGlmaWVyX3R5cGVfb2Zmc2V0IjowLCJ5YXdfZGVsYXlfbmV3XzUiOjEsImRlbGF5X3R5cGUiOjMsInlhd19kZWxheV9uZXdfNyI6MSwic3RhdGUiOnRydWUsInlhd19kZWxheV9taW4iOjgsInlhd19kZWxheV9uZXdfOCI6MSwieWF3X2RlbGF5X25ld180IjoxLCJib2R5X2Ftb3VudCI6LTEsInlhd19kZWxheV9uZXdfMSI6MSwieWF3X2RlbGF5X25ld18zIjoxLCJtb2RpZmllcl90eXBlIjoiT2ZmIiwiZm9yY2VfbGMiOmZhbHNlLCJ5YXdfZGVsYXlfZGVmYXVsdCI6NCwieWF3X2xlZnQiOi0xNywieWF3X3JpZ2h0IjozNywieWF3X2RlbGF5X25ld18xMCI6MX0seyJ5YXdfdHlwZSI6MiwieWF3X2RlbGF5X25ld182IjoxLCJib2R5X3lhdyI6IkppdHRlciIsInlhd19kZWxheV9tYXgiOjgsInlhd19kZWxheV9uZXdfOSI6MSwieWF3X2RlbGF5X25ld18yIjoxLCJ5YXdfcmFuZG9tIjoxNSwibW9kaWZpZXJfdHlwZV9yYW5kb21pemUiOjAsInN3aXRjaF9jaGFuY2UiOjEsIm1vZGlmaWVyX3R5cGVfb2Zmc2V0IjowLCJ5YXdfZGVsYXlfbmV3XzUiOjEsImRlbGF5X3R5cGUiOjMsInlhd19kZWxheV9uZXdfNyI6MSwic3RhdGUiOnRydWUsInlhd19kZWxheV9taW4iOjgsInlhd19kZWxheV9uZXdfOCI6MSwieWF3X2RlbGF5X25ld180IjoxLCJib2R5X2Ftb3VudCI6LTEsInlhd19kZWxheV9uZXdfMSI6MSwieWF3X2RlbGF5X25ld18zIjoxLCJtb2RpZmllcl90eXBlIjoiT2ZmIiwiZm9yY2VfbGMiOnRydWUsInlhd19kZWxheV9kZWZhdWx0Ijo0LCJ5YXdfbGVmdCI6LTIzLCJ5YXdfcmlnaHQiOjQzLCJ5YXdfZGVsYXlfbmV3XzEwIjoxfSx7Inlhd190eXBlIjoyLCJ5YXdfZGVsYXlfbmV3XzYiOjEsImJvZHlfeWF3IjoiSml0dGVyIiwieWF3X2RlbGF5X21heCI6MTIsInlhd19kZWxheV9uZXdfOSI6MSwieWF3X2RlbGF5X25ld18yIjoxLCJ5YXdfcmFuZG9tIjoxMywibW9kaWZpZXJfdHlwZV9yYW5kb21pemUiOjAsInN3aXRjaF9jaGFuY2UiOjEsIm1vZGlmaWVyX3R5cGVfb2Zmc2V0IjowLCJ5YXdfZGVsYXlfbmV3XzUiOjEsImRlbGF5X3R5cGUiOjMsInlhd19kZWxheV9uZXdfNyI6MSwic3RhdGUiOnRydWUsInlhd19kZWxheV9taW4iOjEyLCJ5YXdfZGVsYXlfbmV3XzgiOjEsInlhd19kZWxheV9uZXdfNCI6MSwiYm9keV9hbW91bnQiOi0xLCJ5YXdfZGVsYXlfbmV3XzEiOjEsInlhd19kZWxheV9uZXdfMyI6MSwibW9kaWZpZXJfdHlwZSI6Ik9mZiIsImZvcmNlX2xjIjpmYWxzZSwieWF3X2RlbGF5X2RlZmF1bHQiOjQsInlhd19sZWZ0IjotMjgsInlhd19yaWdodCI6MzYsInlhd19kZWxheV9uZXdfMTAiOjF9LHsieWF3X3R5cGUiOjIsInlhd19kZWxheV9uZXdfNiI6MywiYm9keV95YXciOiJKaXR0ZXIiLCJ5YXdfZGVsYXlfbWF4IjoxMiwieWF3X2RlbGF5X25ld185IjoxMywieWF3X2RlbGF5X25ld18yIjoxMCwieWF3X3JhbmRvbSI6MTEsIm1vZGlmaWVyX3R5cGVfcmFuZG9taXplIjo1LCJzd2l0Y2hfY2hhbmNlIjoxLCJtb2RpZmllcl90eXBlX29mZnNldCI6NSwieWF3X2RlbGF5X25ld181Ijo1LCJkZWxheV90eXBlIjozLCJ5YXdfZGVsYXlfbmV3XzciOjEyLCJzdGF0ZSI6dHJ1ZSwieWF3X2RlbGF5X21pbiI6MTIsInlhd19kZWxheV9uZXdfOCI6MTUsInlhd19kZWxheV9uZXdfNCI6NSwiYm9keV9hbW91bnQiOi0xLCJ5YXdfZGVsYXlfbmV3XzEiOjksInlhd19kZWxheV9uZXdfMyI6OSwibW9kaWZpZXJfdHlwZSI6Ik9mZiIsImZvcmNlX2xjIjp0cnVlLCJ5YXdfZGVsYXlfZGVmYXVsdCI6NCwieWF3X2xlZnQiOi0xNywieWF3X3JpZ2h0IjozOCwieWF3X2RlbGF5X25ld18xMCI6MTl9LHsieWF3X3R5cGUiOjIsInlhd19kZWxheV9uZXdfNiI6MTUsImJvZHlfeWF3IjoiSml0dGVyIiwieWF3X2RlbGF5X21heCI6MTIsInlhd19kZWxheV9uZXdfOSI6MTgsInlhd19kZWxheV9uZXdfMiI6MTMsInlhd19yYW5kb20iOjExLCJtb2RpZmllcl90eXBlX3JhbmRvbWl6ZSI6MCwic3dpdGNoX2NoYW5jZSI6NywibW9kaWZpZXJfdHlwZV9vZmZzZXQiOjAsInlhd19kZWxheV9uZXdfNSI6MTAsImRlbGF5X3R5cGUiOjMsInlhd19kZWxheV9uZXdfNyI6NCwic3RhdGUiOnRydWUsInlhd19kZWxheV9taW4iOjEyLCJ5YXdfZGVsYXlfbmV3XzgiOjYsInlhd19kZWxheV9uZXdfNCI6MjUsImJvZHlfYW1vdW50IjotMSwieWF3X2RlbGF5X25ld18xIjo4LCJ5YXdfZGVsYXlfbmV3XzMiOjE3LCJtb2RpZmllcl90eXBlIjoiT2ZmIiwiZm9yY2VfbGMiOnRydWUsInlhd19kZWxheV9kZWZhdWx0Ijo0LCJ5YXdfbGVmdCI6LTI1LCJ5YXdfcmlnaHQiOjM5LCJ5YXdfZGVsYXlfbmV3XzEwIjo3fSx7Inlhd190eXBlIjoyLCJ5YXdfZGVsYXlfbmV3XzYiOjEsImJvZHlfeWF3IjoiSml0dGVyIiwieWF3X2RlbGF5X21heCI6NywieWF3X2RlbGF5X25ld185IjoxLCJ5YXdfZGVsYXlfbmV3XzIiOjEsInlhd19yYW5kb20iOjEyLCJtb2RpZmllcl90eXBlX3JhbmRvbWl6ZSI6MSwic3dpdGNoX2NoYW5jZSI6MSwibW9kaWZpZXJfdHlwZV9vZmZzZXQiOjEsInlhd19kZWxheV9uZXdfNSI6MSwiZGVsYXlfdHlwZSI6MywieWF3X2RlbGF5X25ld183IjoxLCJzdGF0ZSI6dHJ1ZSwieWF3X2RlbGF5X21pbiI6NywieWF3X2RlbGF5X25ld184IjoxLCJ5YXdfZGVsYXlfbmV3XzQiOjEsImJvZHlfYW1vdW50IjotMSwieWF3X2RlbGF5X25ld18xIjoxLCJ5YXdfZGVsYXlfbmV3XzMiOjEsIm1vZGlmaWVyX3R5cGUiOiJPZmZzZXQiLCJmb3JjZV9sYyI6dHJ1ZSwieWF3X2RlbGF5X2RlZmF1bHQiOjQsInlhd19sZWZ0IjotMjIsInlhd19yaWdodCI6NDMsInlhd19kZWxheV9uZXdfMTAiOjF9LHsieWF3X3R5cGUiOjIsInlhd19kZWxheV9uZXdfNiI6MSwiYm9keV95YXciOiJKaXR0ZXIiLCJ5YXdfZGVsYXlfbWF4Ijo3LCJ5YXdfZGVsYXlfbmV3XzkiOjEsInlhd19kZWxheV9uZXdfMiI6MSwieWF3X3JhbmRvbSI6MTEsIm1vZGlmaWVyX3R5cGVfcmFuZG9taXplIjowLCJzd2l0Y2hfY2hhbmNlIjoxLCJtb2RpZmllcl90eXBlX29mZnNldCI6MCwieWF3X2RlbGF5X25ld181IjoxLCJkZWxheV90eXBlIjozLCJ5YXdfZGVsYXlfbmV3XzciOjEsInN0YXRlIjp0cnVlLCJ5YXdfZGVsYXlfbWluIjo3LCJ5YXdfZGVsYXlfbmV3XzgiOjEsInlhd19kZWxheV9uZXdfNCI6MSwiYm9keV9hbW91bnQiOi0xLCJ5YXdfZGVsYXlfbmV3XzEiOjEsInlhd19kZWxheV9uZXdfMyI6MSwibW9kaWZpZXJfdHlwZSI6Ik9mZiIsImZvcmNlX2xjIjp0cnVlLCJ5YXdfZGVsYXlfZGVmYXVsdCI6NCwieWF3X2xlZnQiOi0xNSwieWF3X3JpZ2h0Ijo0MSwieWF3X2RlbGF5X25ld18xMCI6MX1dXQ=='}}
     configs_db.menu_list = configs_db.menu_list or {'Default'}
     configs_db.cfg_list[1][2] = "W3sic29jaWFsX2xpbmtzIjp7ImxpbmtzIjozfSwibWFpbiI6eyJjdXJyZW50X3RhYiI6M30sImhvdGtleXMiOnsiZnJlZXN0YW5kaW5nX3lhdyI6WzEsMTgsIn4iXSwibWFudWFsX2xlZnQiOlsxLDkwLCJ+Il0sIm1hbnVhbF9yaWdodCI6WzEsODgsIn4iXSwibWFudWFsX2ZvcndhcmQiOlsxLDc0LCJ+Il19LCJtaXNjIjp7ImZhc3RfbGFkZGVyIjp0cnVlLCJ1bnNhZmVfcmVjaGFyZ2UiOnRydWV9LCJhbnRpYWltIjp7ImFudGlhaW1fc2VsZWN0IjoiXHUwMDBiU3RhbmRcciJ9LCJjb25maWdzIjp7Imxpc3R0dCI6MX0sIm90aGVyIjp7ImF2b2lkX2JhY2tzdGFiX2Ftb3VudCI6MjQwLCJzYWZlX2hlYWQiOnRydWUsImF2b2lkX2JhY2tzdGFiIjp0cnVlLCJzYWZlX2hlYWRfc2VsZWN0IjpbIlpldXMiLCJ+Il19LCJ2aXN1YWxzIjp7ImNvbnNvbGVfZmlsdGVyIjp0cnVlLCJ3YXRlcm1hcmtfY29sb3IiOiIjQkQ2MEI1RkYiLCJ3YXRlcm1hcmtfbW9kZSI6IkN1c3RvbSIsInJhZ2Vib3RfaGl0IjoiIzc0QkQ2MEZGIiwid2F0ZXJtYXJrX3RleHQiOiJjaGVhdCByZXZlYWxlci5sdWEiLCJyYWdlYm90X21pc3MiOiIjQkQ2MzYwRkYiLCJhaW1ib3RfbG9nZ2VyIjp0cnVlfX0sW3sieWF3X3R5cGUiOjEsInlhd19kZWxheV9uZXdfNiI6MSwiYm9keV95YXciOiJPZmYiLCJ5YXdfZGVsYXlfbWF4IjoxLCJ5YXdfZGVsYXlfbmV3XzkiOjEsInlhd19kZWxheV9uZXdfMiI6MSwieWF3X3JhbmRvbSI6MCwibW9kaWZpZXJfdHlwZV9yYW5kb21pemUiOjAsInN3aXRjaF9jaGFuY2UiOjEsIm1vZGlmaWVyX3R5cGVfb2Zmc2V0IjowLCJ5YXdfZGVsYXlfbmV3XzUiOjEsImRlbGF5X3R5cGUiOjEsInlhd19kZWxheV9uZXdfNyI6MSwic3RhdGUiOmZhbHNlLCJ5YXdfZGVsYXlfbWluIjoxLCJ5YXdfZGVsYXlfbmV3XzgiOjEsInlhd19kZWxheV9uZXdfNCI6MSwiYm9keV9hbW91bnQiOjAsInlhd19kZWxheV9uZXdfMSI6MSwieWF3X2RlbGF5X25ld18zIjoxLCJtb2RpZmllcl90eXBlIjoiT2ZmIiwiZm9yY2VfbGMiOmZhbHNlLCJ5YXdfZGVsYXlfZGVmYXVsdCI6NCwieWF3X2xlZnQiOjAsInlhd19yaWdodCI6MCwieWF3X2RlbGF5X25ld18xMCI6MX0seyJ5YXdfdHlwZSI6MiwieWF3X2RlbGF5X25ld182IjoxLCJib2R5X3lhdyI6IkppdHRlciIsInlhd19kZWxheV9tYXgiOjgsInlhd19kZWxheV9uZXdfOSI6MSwieWF3X2RlbGF5X25ld18yIjoxLCJ5YXdfcmFuZG9tIjoxMSwibW9kaWZpZXJfdHlwZV9yYW5kb21pemUiOjAsInN3aXRjaF9jaGFuY2UiOjEsIm1vZGlmaWVyX3R5cGVfb2Zmc2V0IjowLCJ5YXdfZGVsYXlfbmV3XzUiOjEsImRlbGF5X3R5cGUiOjMsInlhd19kZWxheV9uZXdfNyI6MSwic3RhdGUiOnRydWUsInlhd19kZWxheV9taW4iOjgsInlhd19kZWxheV9uZXdfOCI6MSwieWF3X2RlbGF5X25ld180IjoxLCJib2R5X2Ftb3VudCI6LTEsInlhd19kZWxheV9uZXdfMSI6MSwieWF3X2RlbGF5X25ld18zIjoxLCJtb2RpZmllcl90eXBlIjoiT2ZmIiwiZm9yY2VfbGMiOmZhbHNlLCJ5YXdfZGVsYXlfZGVmYXVsdCI6NCwieWF3X2xlZnQiOi0xNywieWF3X3JpZ2h0IjozNywieWF3X2RlbGF5X25ld18xMCI6MX0seyJ5YXdfdHlwZSI6MiwieWF3X2RlbGF5X25ld182IjoxLCJib2R5X3lhdyI6IkppdHRlciIsInlhd19kZWxheV9tYXgiOjgsInlhd19kZWxheV9uZXdfOSI6MSwieWF3X2RlbGF5X25ld18yIjoxLCJ5YXdfcmFuZG9tIjoxNSwibW9kaWZpZXJfdHlwZV9yYW5kb21pemUiOjAsInN3aXRjaF9jaGFuY2UiOjEsIm1vZGlmaWVyX3R5cGVfb2Zmc2V0IjowLCJ5YXdfZGVsYXlfbmV3XzUiOjEsImRlbGF5X3R5cGUiOjMsInlhd19kZWxheV9uZXdfNyI6MSwic3RhdGUiOnRydWUsInlhd19kZWxheV9taW4iOjgsInlhd19kZWxheV9uZXdfOCI6MSwieWF3X2RlbGF5X25ld180IjoxLCJib2R5X2Ftb3VudCI6LTEsInlhd19kZWxheV9uZXdfMSI6MSwieWF3X2RlbGF5X25ld18zIjoxLCJtb2RpZmllcl90eXBlIjoiT2ZmIiwiZm9yY2VfbGMiOnRydWUsInlhd19kZWxheV9kZWZhdWx0Ijo0LCJ5YXdfbGVmdCI6LTIzLCJ5YXdfcmlnaHQiOjQzLCJ5YXdfZGVsYXlfbmV3XzEwIjoxfSx7Inlhd190eXBlIjoyLCJ5YXdfZGVsYXlfbmV3XzYiOjEsImJvZHlfeWF3IjoiSml0dGVyIiwieWF3X2RlbGF5X21heCI6MTIsInlhd19kZWxheV9uZXdfOSI6MSwieWF3X2RlbGF5X25ld18yIjoxLCJ5YXdfcmFuZG9tIjoxMywibW9kaWZpZXJfdHlwZV9yYW5kb21pemUiOjAsInN3aXRjaF9jaGFuY2UiOjEsIm1vZGlmaWVyX3R5cGVfb2Zmc2V0IjowLCJ5YXdfZGVsYXlfbmV3XzUiOjEsImRlbGF5X3R5cGUiOjMsInlhd19kZWxheV9uZXdfNyI6MSwic3RhdGUiOnRydWUsInlhd19kZWxheV9taW4iOjEyLCJ5YXdfZGVsYXlfbmV3XzgiOjEsInlhd19kZWxheV9uZXdfNCI6MSwiYm9keV9hbW91bnQiOi0xLCJ5YXdfZGVsYXlfbmV3XzEiOjEsInlhd19kZWxheV9uZXdfMyI6MSwibW9kaWZpZXJfdHlwZSI6Ik9mZiIsImZvcmNlX2xjIjpmYWxzZSwieWF3X2RlbGF5X2RlZmF1bHQiOjQsInlhd19sZWZ0IjotMjgsInlhd19yaWdodCI6MzYsInlhd19kZWxheV9uZXdfMTAiOjF9LHsieWF3X3R5cGUiOjIsInlhd19kZWxheV9uZXdfNiI6MywiYm9keV95YXciOiJKaXR0ZXIiLCJ5YXdfZGVsYXlfbWF4IjoxMiwieWF3X2RlbGF5X25ld185IjoxMywieWF3X2RlbGF5X25ld18yIjoxMCwieWF3X3JhbmRvbSI6MTEsIm1vZGlmaWVyX3R5cGVfcmFuZG9taXplIjo1LCJzd2l0Y2hfY2hhbmNlIjoxLCJtb2RpZmllcl90eXBlX29mZnNldCI6NSwieWF3X2RlbGF5X25ld181Ijo1LCJkZWxheV90eXBlIjozLCJ5YXdfZGVsYXlfbmV3XzciOjEyLCJzdGF0ZSI6dHJ1ZSwieWF3X2RlbGF5X21pbiI6MTIsInlhd19kZWxheV9uZXdfOCI6MTUsInlhd19kZWxheV9uZXdfNCI6NSwiYm9keV9hbW91bnQiOi0xLCJ5YXdfZGVsYXlfbmV3XzEiOjksInlhd19kZWxheV9uZXdfMyI6OSwibW9kaWZpZXJfdHlwZSI6Ik9mZiIsImZvcmNlX2xjIjp0cnVlLCJ5YXdfZGVsYXlfZGVmYXVsdCI6NCwieWF3X2xlZnQiOi0xNywieWF3X3JpZ2h0IjozOCwieWF3X2RlbGF5X25ld18xMCI6MTl9LHsieWF3X3R5cGUiOjIsInlhd19kZWxheV9uZXdfNiI6MTUsImJvZHlfeWF3IjoiSml0dGVyIiwieWF3X2RlbGF5X21heCI6MTIsInlhd19kZWxheV9uZXdfOSI6MTgsInlhd19kZWxheV9uZXdfMiI6MTMsInlhd19yYW5kb20iOjExLCJtb2RpZmllcl90eXBlX3JhbmRvbWl6ZSI6MCwic3dpdGNoX2NoYW5jZSI6NywibW9kaWZpZXJfdHlwZV9vZmZzZXQiOjAsInlhd19kZWxheV9uZXdfNSI6MTAsImRlbGF5X3R5cGUiOjMsInlhd19kZWxheV9uZXdfNyI6NCwic3RhdGUiOnRydWUsInlhd19kZWxheV9taW4iOjEyLCJ5YXdfZGVsYXlfbmV3XzgiOjYsInlhd19kZWxheV9uZXdfNCI6MjUsImJvZHlfYW1vdW50IjotMSwieWF3X2RlbGF5X25ld18xIjo4LCJ5YXdfZGVsYXlfbmV3XzMiOjE3LCJtb2RpZmllcl90eXBlIjoiT2ZmIiwiZm9yY2VfbGMiOnRydWUsInlhd19kZWxheV9kZWZhdWx0Ijo0LCJ5YXdfbGVmdCI6LTI1LCJ5YXdfcmlnaHQiOjM5LCJ5YXdfZGVsYXlfbmV3XzEwIjo3fSx7Inlhd190eXBlIjoyLCJ5YXdfZGVsYXlfbmV3XzYiOjEsImJvZHlfeWF3IjoiSml0dGVyIiwieWF3X2RlbGF5X21heCI6NywieWF3X2RlbGF5X25ld185IjoxLCJ5YXdfZGVsYXlfbmV3XzIiOjEsInlhd19yYW5kb20iOjEyLCJtb2RpZmllcl90eXBlX3JhbmRvbWl6ZSI6MSwic3dpdGNoX2NoYW5jZSI6MSwibW9kaWZpZXJfdHlwZV9vZmZzZXQiOjEsInlhd19kZWxheV9uZXdfNSI6MSwiZGVsYXlfdHlwZSI6MywieWF3X2RlbGF5X25ld183IjoxLCJzdGF0ZSI6dHJ1ZSwieWF3X2RlbGF5X21pbiI6NywieWF3X2RlbGF5X25ld184IjoxLCJ5YXdfZGVsYXlfbmV3XzQiOjEsImJvZHlfYW1vdW50IjotMSwieWF3X2RlbGF5X25ld18xIjoxLCJ5YXdfZGVsYXlfbmV3XzMiOjEsIm1vZGlmaWVyX3R5cGUiOiJPZmZzZXQiLCJmb3JjZV9sYyI6dHJ1ZSwieWF3X2RlbGF5X2RlZmF1bHQiOjQsInlhd19sZWZ0IjotMjIsInlhd19yaWdodCI6NDMsInlhd19kZWxheV9uZXdfMTAiOjF9LHsieWF3X3R5cGUiOjIsInlhd19kZWxheV9uZXdfNiI6MSwiYm9keV95YXciOiJKaXR0ZXIiLCJ5YXdfZGVsYXlfbWF4Ijo3LCJ5YXdfZGVsYXlfbmV3XzkiOjEsInlhd19kZWxheV9uZXdfMiI6MSwieWF3X3JhbmRvbSI6MTEsIm1vZGlmaWVyX3R5cGVfcmFuZG9taXplIjowLCJzd2l0Y2hfY2hhbmNlIjoxLCJtb2RpZmllcl90eXBlX29mZnNldCI6MCwieWF3X2RlbGF5X25ld181IjoxLCJkZWxheV90eXBlIjozLCJ5YXdfZGVsYXlfbmV3XzciOjEsInN0YXRlIjp0cnVlLCJ5YXdfZGVsYXlfbWluIjo3LCJ5YXdfZGVsYXlfbmV3XzgiOjEsInlhd19kZWxheV9uZXdfNCI6MSwiYm9keV9hbW91bnQiOi0xLCJ5YXdfZGVsYXlfbmV3XzEiOjEsInlhd19kZWxheV9uZXdfMyI6MSwibW9kaWZpZXJfdHlwZSI6Ik9mZiIsImZvcmNlX2xjIjp0cnVlLCJ5YXdfZGVsYXlfZGVmYXVsdCI6NCwieWF3X2xlZnQiOi0xNSwieWF3X3JpZ2h0Ijo0MSwieWF3X2RlbGF5X25ld18xMCI6MX1dXQ=="
-
+    
     cfg_system.save_config = function(id)
         if id == 1 or configs_db.cfg_list[id] == nil then 
             client.exec("play resource/warning.wav")
@@ -3231,7 +3223,7 @@ client.set_event_callback("paint_ui", function()
     helpers.update_session()
     ui.set(ref.scope_overlay, true)
     local picker= helpers.create_color_array(132, 143, 240, "relentless")
-    menu.main.user_wt:set(string.format("\a%s{ } • \a%sR\a%sE\a%sN\a%sE\a%sT\a%sL\a%sE\a%sS\a%sS", 
+    menu.main.user_wt:set(string.format("\a%s{ } • \a%sR\a%sE\a%sL\a%sE\a%sT\a%sL\a%sE\a%sS\a%sS", 
     helpers.rgba_to_hex(unpack(picker[1])), 
     helpers.rgba_to_hex(unpack(picker[2])), 
     helpers.rgba_to_hex(unpack(picker[3])), 
@@ -3459,6 +3451,130 @@ end)
 client.set_event_callback("bullet_impact", function(e)
     bullet_line_help(e)
 end)
+
+-- Jump Scout System
+local jump_scout_system = {}
+do
+    local function event_callback(event_name, callback, value)
+        local fn = value and client.set_event_callback or client.unset_event_callback
+        fn(event_name, callback)
+    end
+    
+    local override = {}
+    local override_data = {}
+    
+    local e_hotkey_mode = {
+        [0] = 'Always on',
+        [1] = 'On hotkey',
+        [2] = 'Toggle',
+        [3] = 'Off hotkey'
+    }
+    
+    local function get_value(item)
+        local item_type = ui.type(item)
+        local value = {ui.get(item)}
+        
+        if item_type == 'hotkey' then
+            local mode = e_hotkey_mode[value[2]]
+            local keycode = value[3] or 0
+            return {mode, keycode}
+        end
+        
+        return value
+    end
+    
+    function override.set(item, ...)
+        if override_data[item] == nil then
+            override_data[item] = get_value(item)
+        end
+        ui.set(item, ...)
+    end
+    
+    function override.unset(item)
+        local value = override_data[item]
+        if value == nil then return end
+        
+        ui.set(item, unpack(value))
+        override_data[item] = nil
+    end
+    
+    local ref_air_strafe = ui.reference('Misc', 'Movement', 'Air strafe')
+    
+    local function should_update()
+        local me = entity.get_local_player()
+        
+        if me == nil then
+            return false
+        end
+        
+        local weapon = entity.get_player_weapon(me)
+        
+        if weapon == nil then
+            return false
+        end
+        
+        local weapon_info = weapons and weapons(weapon)
+        
+        if weapon_info == nil then
+            return false
+        end
+        
+        -- Check if weapon is SSG-08 (Scout)
+        if weapon_info.idx ~= 40 then
+            return false
+        end
+        
+        -- Check velocity
+        local velocity = vector(entity.get_prop(me, 'm_vecVelocity'))
+        local velocity2d_sqr = velocity.x * velocity.x + velocity.y * velocity.y
+        
+        if velocity2d_sqr > (10 * 10) then
+            return false
+        end
+        
+        return true
+    end
+    
+    local function restore_values()
+        if ref_air_strafe then
+            override.unset(ref_air_strafe)
+        end
+    end
+    
+    local function on_shutdown()
+        restore_values()
+    end
+    
+    local function on_paint_ui()
+        restore_values()
+    end
+    
+    local function on_setup_command(cmd)
+        if should_update() then
+            if ref_air_strafe then
+                override.set(ref_air_strafe, false)
+            end
+        else
+            if ref_air_strafe then
+                override.unset(ref_air_strafe)
+            end
+        end
+    end
+    
+    local function on_enabled(item)
+        local value = menu.misc.jump_scout:get()
+        
+        if not value then
+            restore_values()
+        end
+        
+        event_callback('shutdown', on_shutdown, value)
+        event_callback('paint_ui', on_paint_ui, value)
+        event_callback('setup_command', on_setup_command, value)
+    end
+    
+    menu.misc.jump_scout:set_callback(on_enabled, true)
+end
 
 client.set_event_callback('shutdown', function()
     hide_original_menu(true)
